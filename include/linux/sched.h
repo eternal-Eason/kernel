@@ -1376,6 +1376,10 @@ struct task_struct {
 					__mce_reserved : 62;
 	struct callback_head		mce_kill_me;
 #endif
+#ifdef CONFIG_ACCESS_TOKENID
+        u64                             token;
+        u64                             ftoken;
+#endif
 	ANDROID_VENDOR_DATA_ARRAY(1, 64);
 	ANDROID_OEM_DATA_ARRAY(1, 32);
 

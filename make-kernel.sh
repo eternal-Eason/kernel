@@ -58,7 +58,7 @@ function make_kernel_image()
 	conf=$2
 	dtb=$3
 	
-	${MAKE} ARCH=${arch} ${conf}
+	#${MAKE} ARCH=${arch} ${conf}
 	if [ $? -ne 0 ]; then
 		echo "FAIL: ${MAKE} ARCH=${arch} ${conf}"
 		return -1

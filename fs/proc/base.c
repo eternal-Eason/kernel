@@ -2063,6 +2063,14 @@ end_instantiate:
 	return dir_emit(ctx, name, len, ino, type);
 }
 
+#ifdef CONFIG_ACCESS_TOKENID
+static int proc_token_operations(struct seq_file *m, struct pid_namespace *ns,
+				 struct pid *pid, struct task_struct *task)
+{
+	seq_printf(m, "%#llx %#llx\n", task->token, task->ftoken);
+	return 0;
+}
+#endif /* CONFIG_ACCESS_TOKENID */
 /*
  * dname_to_vma_addr - maps a dentry name into two unsigned longs
  * which represent vma start and end addresses.
@@ -3187,6 +3195,9 @@ static const struct pid_entry tgid_base_stuff[] = {
 #ifdef CONFIG_SCHED_DEBUG
 	REG("sched",      S_IRUGO|S_IWUSR, proc_pid_sched_operations),
 #endif
+#ifdef CONFIG_ACCESS_TOKENID
+	ONE("tokenid", S_IRUSR, proc_token_operations),
+#endif
 #ifdef CONFIG_SCHED_AUTOGROUP
 	REG("autogroup",  S_IRUGO|S_IWUSR, proc_pid_sched_autogroup_operations),
 #endif
@@ -3530,6 +3541,9 @@ static const struct pid_entry tid_base_stuff[] = {
 	ONE("limits",	 S_IRUGO, proc_pid_limits),
 #ifdef CONFIG_SCHED_DEBUG
 	REG("sched",     S_IRUGO|S_IWUSR, proc_pid_sched_operations),
+#endif
+#ifdef CONFIG_ACCESS_TOKENID
+	ONE("tokenid", S_IRUSR, proc_token_operations),
 #endif
 	NOD("comm",      S_IFREG|S_IRUGO|S_IWUSR,
 			 &proc_tid_comm_inode_operations,
