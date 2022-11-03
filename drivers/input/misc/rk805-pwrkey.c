@@ -15,6 +15,9 @@
 #include <linux/module.h>
 #include <linux/of.h>
 #include <linux/platform_device.h>
+#include "hdf_hid_adapter.h"
+
+InputDevice *HidinputDev=NULL;
 
 static irqreturn_t pwrkey_fall_irq(int irq, void *_pwr)
 {
@@ -23,6 +26,8 @@ static irqreturn_t pwrkey_fall_irq(int irq, void *_pwr)
 	input_report_key(pwr, KEY_POWER, 1);
 	input_sync(pwr);
 
+	HidReportEvent(HidinputDev, EV_KEY, KEY_POWER, 1);
+	HidReportEvent(HidinputDev, EV_SYN, SYN_REPORT, 0);
 	return IRQ_HANDLED;
 }
 
@@ -33,7 +38,22 @@ static irqreturn_t pwrkey_rise_irq(int irq, void *_pwr)
 	input_report_key(pwr, KEY_POWER, 0);
 	input_sync(pwr);
 
+	HidReportEvent(HidinputDev, EV_KEY, KEY_POWER, 0);
+	HidReportEvent(HidinputDev, EV_SYN, SYN_REPORT, 0);
 	return IRQ_HANDLED;
+}
+
+static InputDevice* HidRegisterHdfPowerKeyDev(void) 
+{
+	InputDevice* inputDev = NULL;
+	HidInfo Hid_keyInfo;
+
+	Hid_keyInfo.devType = HID_TYPE_KEY;
+	Hid_keyInfo.eventType[0] = SET_BIT(EV_KEY);
+	Hid_keyInfo.keyCode[3] = SET_BIT(KEY_POWER);
+	Hid_keyInfo.devName = "hid-powerkey";
+	inputDev = HidRegisterHdfInputDev(&Hid_keyInfo);
+	return inputDev;
 }
 
 static int rk805_pwrkey_probe(struct platform_device *pdev)
@@ -95,6 +115,11 @@ static int rk805_pwrkey_probe(struct platform_device *pdev)
 	platform_set_drvdata(pdev, pwr);
 	device_init_wakeup(&pdev->dev, true);
 
+	HidinputDev = HidRegisterHdfPowerKeyDev();
+	if (NULL == HidinputDev) {
+		pr_err("HidRegisterHdfInputDev error\n");
+		return -EINVAL;
+	}
 	return 0;
 }
 

@@ -1,0 +1,47 @@
+# Copyright (C) 2021 HiSilicon (Shanghai) Technologies CO., LIMITED.
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+if (defined(ohos_lite)) {
+  import("//build/lite/config/component/lite_component.gni")
+} else {
+  import("//build/ohos.gni")
+}
+
+if (defined(ohos_lite)) {
+  copy("wifi_firmware") {
+    sources = [ "../firmware" ]
+    outputs = [ "$root_out_dir/vendor/firmware/hi3881" ]
+  }
+} else {
+  ohos_prebuilt_etc("wifi_cfg") {
+    source = "wifi_cfg"
+    module_install_dir = "firmware/hi3881"
+    install_images = [ vendor_base_dir ]
+    part_name = "hisilicon_products"
+  }
+  ohos_prebuilt_etc("wifi_fw_bin") {
+    source = "hi3881_fw.bin"
+    module_install_dir = "firmware/hi3881"
+    install_images = [ vendor_base_dir ]
+    part_name = "hisilicon_products"
+  }
+  group("wifi_firmware") {
+    deps = [
+      ":wifi_cfg",
+      ":wifi_fw_bin",
+    ]
+  }
+}

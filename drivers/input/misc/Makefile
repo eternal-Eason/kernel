@@ -85,3 +85,17 @@ obj-$(CONFIG_INPUT_XEN_KBDDEV_FRONTEND)	+= xen-kbdfront.o
 obj-$(CONFIG_INPUT_YEALINK)		+= yealink.o
 obj-$(CONFIG_INPUT_IDEAPAD_SLIDEBAR)	+= ideapad_slidebar.o
 
+ccflags-y +=-Idrivers/hdf/framework/model/input/driver \
+             -Idrivers/hdf/framework/model/input/driver/input_bus_ops \
+             -Idrivers/hdf/framework/include/core \
+             -Idrivers/hdf/framework/core/common/include/host \
+             -Idrivers/hdf/framework/include/utils \
+             -Idrivers/hdf/framework/include/osal \
+             -Idrivers/hdf/framework/include/platform \
+             -Idrivers/hdf/framework/include/config \
+             -Idrivers/hdf/framework/core/host/include \
+             -Idrivers/hdf/framework/core/shared/include \
+             -Idrivers/hdf/framework/utils/include \
+             -Idrivers/hdf/khdf/osal/include
+ccflags-y +=-Ibounds_checking_function/include \
+             -Idrivers/hdf/evdev

@@ -58,7 +58,7 @@ function make_kernel_image()
 	conf=$2
 	dtb=$3
 	
-	#${MAKE} ARCH=${arch} ${conf}
+	${MAKE} ARCH=${arch} ${conf}
 	if [ $? -ne 0 ]; then
 		echo "FAIL: ${MAKE} ARCH=${arch} ${conf}"
 		return -1
@@ -66,6 +66,7 @@ function make_kernel_image()
 	#${MAKE} ARCH=${arch} menuconfig
 	#${MAKE} ARCH=${arch} ${dtb}.img -j${CPUs}
 	#make ARCH=arm64 savedefconfig
+	#cp -rf ./defconfig ./arch/arm64/configs/rockchip_linux_defconfig
 	#exit 
 	${MAKE} ARCH=${arch} -j${CPUs}
 	if [ $? -ne 0 ]; then
